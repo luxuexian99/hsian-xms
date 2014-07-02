@@ -1,9 +1,11 @@
 package org.hsian.xms.repositories;
 
-import org.springframework.stereotype.Repository;
+import org.hsian.xms.model.User;
 
 /**
+ *
  * Created by Hsian on 14-6-21.
  */
 public interface UserRepository {
+    User addUser(User user);
 }

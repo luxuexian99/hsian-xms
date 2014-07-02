@@ -4,6 +4,8 @@ import org.hsian.xms.config.AppConfig;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+import javax.servlet.Filter;
+
 /**
  * web程序加载器，如：web.xml
  * Created by Hsian on 14-6-21.
@@ -45,7 +47,7 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
      */
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class<?>[] {WebAppInitializer.class};
+        return new Class<?>[] {WebAppConfig.class};
     }
 
     /**
@@ -62,5 +64,17 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
     @Override
     protected String[] getServletMappings() {
         return new String[]{"/"};
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    protected Filter[] getServletFilters() {
+        return new Filter[]{
+                // new DelegatingFilterProxy("springSecurityFilterChain"),
+                // new OpenEntityManagerInViewFilter()
+        };
     }
 }

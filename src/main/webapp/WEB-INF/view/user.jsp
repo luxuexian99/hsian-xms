@@ -7,6 +7,6 @@
     <title>User</title>
 </head>
 <body>
-    <h1>Hello: ${user.name}!</h1>
+    <h1>Hello: ${user.userName}!</h1>
 </body>
 </html>

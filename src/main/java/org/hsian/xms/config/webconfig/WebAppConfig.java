@@ -2,6 +2,7 @@ package org.hsian.xms.config.webconfig;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.web.servlet.ViewResolver;
@@ -18,7 +19,9 @@ import java.util.Properties;
  *
  */
 @Configuration
+// 打开注解式Mvc support, <mvc:annotation-driven/>
 @EnableWebMvc
+@ComponentScan(basePackages = { "org.hsian.xms.controllers"})
 public class WebAppConfig extends WebMvcConfigurerAdapter {
 
     /**

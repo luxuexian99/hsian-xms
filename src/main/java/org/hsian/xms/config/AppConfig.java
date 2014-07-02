@@ -1,6 +1,5 @@
 package org.hsian.xms.config;
 
-import org.hsian.xms.config.beanconfig.ControllerBeanContext;
 import org.hsian.xms.config.datasourceconfig.DataSourceConfig;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -10,7 +9,9 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.stereotype.Controller;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -27,31 +28,31 @@ import java.util.Properties;
 @EnableTransactionManagement
 // 打开切片配置 @Aspect, <aop:aspectj-autoproxy />
 @EnableAspectJAutoProxy
-// 打开注解式Mvc support, <mvc:annotation-driven/>
-@EnableWebMvc
 // 打开Scheduling
 @EnableScheduling
 // 打开缓存
 @EnableCaching
+@EnableAsync
 // 引入各种配置类
 @Import(
     value = {
         DataSourceConfig.class // 数据源相关的配置类
         //, RepositoryBeanContext.class // Dao层bean的配置类
         //, ServiceBeanContext.class // Service层bean的配置类
-        , ControllerBeanContext.class // Controller层bean的配置类
+        //, ControllerBeanContext.class // Controller层bean的配置类
     }
 )
 // 组件扫描：<context:component-scan base-package="org.example.config"/>
 @ComponentScan(
     basePackages = {
-            "org.hsian.xms"
-            //, "org.hsian.xms.services"
-            //, "org.hsian.xms.dao"
+        "org.hsian.xms"
+        //, "org.hsian.xms.services"
+        //, "org.hsian.xms.repositories"
     },
-    excludeFilters = @ComponentScan.Filter(
-            type = FilterType.REGEX, pattern={"org.hsian.xms.controllers.*"}
-    )
+    excludeFilters = {
+        @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Controller.class),
+        @ComponentScan.Filter(type = FilterType.ANNOTATION, value = EnableWebMvc.class)
+    }
 )
 @PropertySource(value = { "classpath:application.properties" })
 public class AppConfig {
@@ -60,7 +61,7 @@ public class AppConfig {
     DataSourceConfig dataSourceConfig;
 
     /**
-     * @return 事务管理者
+     * @return 事务管理者 PlatformTransactionManager
      */
     @Bean(name = "transactionManager")
     public PlatformTransactionManager transactionManager() {
@@ -72,7 +73,7 @@ public class AppConfig {
 
     /**
      * Property资源配置
-     * @return
+     * @return PropertySourcesPlaceholderConfigurer
      */
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
@@ -81,7 +82,7 @@ public class AppConfig {
 
     /**
      * 缓存管理者
-     * @return
+     * @return CacheManager
      */
     @Bean
     public CacheManager cacheManager() {
@@ -90,7 +91,7 @@ public class AppConfig {
 
     /**
      * 邮件发送器
-     * @return
+     * @return JavaMailSenderImpl
      */
     @Bean
     public JavaMailSenderImpl javaMailSenderImpl() {

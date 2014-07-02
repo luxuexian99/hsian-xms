@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <%--<%@page import="org.hsian.xms.controllers.UserController"%>--%>
 <%--<%@include file="taglib.jsp"%>--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <title>Welcome</title>
@@ -21,5 +22,6 @@
     <%--</sec:authorize>--%>
 <%--</h3>--%>
 <%--<p>	<a href="${rootUrl}logout">Logout</a></p>--%>
+    <a href="addUser.jsp">添加用户</a>
 </body>
 </html>
