@@ -7,6 +7,7 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -109,5 +110,22 @@ public class AppConfig {
         mailSenderImpl.setJavaMailProperties(javaMailProps);
 
         return mailSenderImpl;
+    }
+
+
+    /**
+     * <pre> {@code
+     *  <bean id="jdbcTemplate"
+     *      class="org.springframework.jdbc.core.JdbcTemplate" abstract="false"
+     *      lazy-init="false" autowire="default" dependency-check="default">
+     *      <property name="dataSource" ref="dataSource" />
+     *  </bean>
+     * } </pre>
+     * @return
+     */
+    @Bean
+    public JdbcTemplate jdbcTemplate() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSourceConfig.dataSource());
+        return jdbcTemplate;
     }
 }

@@ -1,12 +1,18 @@
 package org.hsian.xms.config.datasourceconfig;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import org.apache.ibatis.session.ExecutorType;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.hsian.xms.repositories.mapper.UserMapper;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.mybatis.spring.annotation.MapperScan;
+import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 
 import javax.inject.Inject;
@@ -19,6 +25,14 @@ import java.beans.PropertyVetoException;
  */
 @Configuration
 @PropertySource(value = { "classpath:dataSource.properties" })
+/*
+ * 扫描mapper
+ * <!-- scan for mappers and let them be autowired -->
+ *  <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+ *      <property name="basePackage" value="org.hsian.xms.repositories.mapper" />
+ *  </bean>
+ */
+@MapperScan(basePackages = "org.hsian.xms.repositories.mapper")
 public class DataSourceConfig {
 
     private final static Logger logger = LoggerFactory.getLogger(DataSourceConfig.class);
@@ -78,4 +92,79 @@ public class DataSourceConfig {
 
         return ds;
     }
+
+    /**
+     *
+     * mybatis sqlSessionFactory configuration.
+     *
+     * @return SqlSessionFactoryBean
+     */
+    @Bean(name = "sqlSessionFactory")
+    public SqlSessionFactory sqlSessionFactory() {
+        SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
+        factoryBean.setDataSource(dataSource());
+//        Resource rs = new DefaultResourceLoader().getResource(mybatisConfigLocation);
+//        factoryBean.setConfigLocation(rs);
+//        factoryBean.setTypeAliasesPackage("org.hsian.xms.model");
+        try {
+            return factoryBean.getObject();
+        } catch (Exception e) {
+            logger.error("build sqlSessionFactory error", e);
+        }
+        return null;
+    }
+
+    /**
+     * SqlSessionTemplate return SqlSession
+     * @return
+     */
+    @Bean(name = "sqlSession")
+    public SqlSession sqlSession() {
+        return new SqlSessionTemplate(sqlSessionFactory(), ExecutorType.REUSE);
+    }
+
+    /**
+     * 创建数据映射器，数据映射器必须为接口
+     * <pre> {@code
+     *  <bean id="basMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+     *      <property name="mapperInterface" value="org.hsian.xms.repositories.mapper.BasMapper" />
+     *      <property name="sqlSessionFactory" ref="sqlSessionFactory" />
+     *  </bean>
+     *
+     *  <bean id="baseMapper" class="org.mybatis.spring.mapper.MapperFactoryBean"
+     *      abstract="true" lazy-init="true">
+     *     <property name="sqlSessionFactory" ref="sqlSessionFactory" />
+     *  </bean>
+     *
+     *  <bean id="oneMapper" parent="baseMapper">
+     *     <property name="mapperInterface" value="my.package.MyMapperInterface" />
+     *  </bean>
+     *
+     *  <bean id="anotherMapper" parent="baseMapper">
+     *     <property name="mapperInterface" value="my.package.MyAnotherMapperInterface" />
+     *  </bean>
+     * }
+     * </pre>
+     */
+//    @Bean
+////    @Lazy
+//    public <T extends Object> MapperFactoryBean mapperFactoryBean(Class<T> mapperInterface) {
+//        MapperFactoryBean<T> mapperFactory = new MapperFactoryBean<T>();
+//        mapperFactory.setMapperInterface(mapperInterface);
+//        mapperFactory.setSqlSessionFactory(sqlSessionFactory());
+//        return mapperFactory;
+//    }
+//
+//    @Bean
+////    @DependsOn("mapperFactoryBean")
+//    public UserMapper userMapper() {
+//        UserMapper userMapper = null;
+//        try {
+//            userMapper = (UserMapper) mapperFactoryBean(UserMapper.class).getObject();
+//        } catch (Exception e) {
+//            logger.error(e.getMessage());
+//        }
+//        return userMapper;
+//    }
+
 }

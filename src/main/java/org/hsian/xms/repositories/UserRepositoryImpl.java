@@ -1,14 +1,21 @@
 package org.hsian.xms.repositories;
 
 import org.hsian.xms.model.User;
+import org.hsian.xms.repositories.common.BasSqlMapper;
+import org.hsian.xms.repositories.common.RepositoryTemplate;
+import org.hsian.xms.repositories.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
+
+import static org.hsian.xms.repositories.common.BasSqlMapper.*;
 
 /**
  * User 访问数据库的实现。
@@ -18,29 +25,16 @@ import java.util.Date;
 public class UserRepositoryImpl implements UserRepository {
 
     @Autowired
-    DataSource dataSource;
+    private UserMapper userMapper;
 
     @Override
     public User addUser(User user) {
-        Connection connection = null;
-        String sql =
-                "insert into t_bas_user(name, email, password, createdTime, creatorId, lockVersion, statusId) " +
-                " values (?, ?, ?, ?, ?, ?, ?)";
-        try {
-            connection = dataSource.getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(sql);
 
-            pstmt.setString(1, user.getUserName());
-            pstmt.setString(2, user.getEmail());
-            pstmt.setString(3, user.getPassword());
-            pstmt.setObject(4, new Date());
-            pstmt.setLong(5, 0);
-            pstmt.setLong(6, 0);
-            pstmt.setLong(7, 1);
+        user.setCreatedTime(new Date());
+        int effective = userMapper.addUser(user);
 
-            pstmt.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if(effective != 1) {
+//            throw new Exception();
         }
 
         return user;

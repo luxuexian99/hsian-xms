@@ -45,7 +45,7 @@ public abstract class AbstractPo implements Serializable {
     /**
      * 版本，可以使用保持数据的一致性，也就是乐观锁处理。
      */
-    private long lockVersion;
+    private long lockVersion = 0;
 
     /**
      * 备注
