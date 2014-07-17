@@ -8,4 +8,5 @@ import org.hsian.xms.model.User;
  */
 public interface UserRepository {
     User addUser(User user);
+    void delete(User user);
 }

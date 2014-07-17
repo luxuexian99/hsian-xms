@@ -14,7 +14,7 @@ version = qualifyVersionIfNecessary(version)
 // The following is a work-around for allowing to build on JDK 8 until the
 // Gradle build uses Ant 1.9.x by default. This is necessary to avoid the
 // "Class not found: javac1.8" issue with Ant versions prior to 1.9.x
-    ant.properties["build.compiler"] = "javac1.7"
+ant.properties["build.compiler"] = "javac1.7"
 
 //    ext.gradleScriptDir = "${rootProject.projectDir}/gradle"
 ext {
@@ -97,7 +97,8 @@ dependencies {
 
     /** Mybatis */
     compile "org.mybatis:mybatis-spring:1.2.2"
-    compile "org.mybatis:mybatis:3.2.0"
+    compile "org.mybatis:mybatis:3.2.6"
+    compile "javax.persistence:persistence-api:1.0.2"
 
     /** CGLIB, only required and used for @Configuration usage */
     compile "cglib:cglib:3.1"

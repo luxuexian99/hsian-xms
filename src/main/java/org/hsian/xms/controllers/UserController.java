@@ -45,7 +45,16 @@ public class UserController {
     @RequestMapping(value = "/addUser", method = POST)
     public ModelAndView addUser(@ModelAttribute("user") User user) {
         ModelAndView mav = new ModelAndView();
-        userService.addUser(user);
+        User rlt = userService.addUser(user);
+        mav.addObject("user", rlt);
+        mav.setViewName("/user");
+        return mav;
+    }
+
+    @RequestMapping(value = "/delete", method = POST)
+    public ModelAndView delete(@ModelAttribute("user") User user) {
+        ModelAndView mav = new ModelAndView();
+        userService.delete(user);
         mav.addObject("user", user);
         mav.setViewName("/user");
         return mav;

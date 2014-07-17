@@ -2,23 +2,27 @@ package org.hsian.xms.model.common;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.Date;
 
 /**
-* 所有PO的基类
-*
-* @author Hsian
-*
-*/
+ * 所有PO的基类
+ *
+ * @author Hsian
+ *
+ */
 public abstract class AbstractPo implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * id主键
-	 */
-	private Long id;
+    /**
+     * id主键
+     */
+    @Id
+    private Long id;
 
     private Long domainId;
 
@@ -79,6 +83,33 @@ public abstract class AbstractPo implements Serializable {
 
     private String udf6;
 
+    /**
+     * 获取POJO对应的表名
+     * 需要POJO中的属性定义@Table(name)
+     * @return
+     */
+    public String table() {
+        Table table = this.getClass().getAnnotation(Table.class);
+        if(table != null) {
+            return table.name();
+        } else {
+            throw new RuntimeException("undefined POJO @Table, need Table(@Table)");
+        }
+    }
+
+    /**
+     * 获取POJO对应的主键名称
+     * 需要POJO中的属性定义@Id
+     * @return
+     */
+    public String id() {
+//        for(Field field : this.getClass().getFields()) {
+//            if(field.isAnnotationPresent(Id.class))
+//                return field.getName();
+//        }
+//        throw new RuntimeException("undefined POJO @Id");
+        return "id";
+    }
 
     /**
      * 清空操作信息，用于复制PO对象时，清空源PO的操作信息，同时把主键值设置为null

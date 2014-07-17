@@ -2,9 +2,12 @@ package org.hsian.xms.model;
 
 import org.hsian.xms.model.common.AbstractPo;
 
+import javax.persistence.Table;
+
 /**
  * Created by Hsian on 14-6-22.
  */
+@Table(name = "t_bas_user")
 public class User extends AbstractPo {
 
     private String userName;

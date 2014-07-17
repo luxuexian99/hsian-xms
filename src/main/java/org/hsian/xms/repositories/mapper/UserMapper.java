@@ -12,21 +12,16 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
 import org.hsian.xms.model.User;
 
-import java.util.Date;
-
-import static org.hsian.xms.repositories.common.BasSqlMapper.addUserSql;
+import static org.hsian.xms.repositories.sql.UserSqlBuilder.addUserSql;
 
 /**
  * org.hsian.xms.repositories.mapper
  * Created by Hsian on 14-7-12.
  */
-public interface UserMapper {
+public interface UserMapper extends BaseMapper<User> {
 
     @Insert(
-        value = {
-            " insert into t_bas_user(name, email, password, createdTime, creatorId, lockVersion, statusId) ",
-            " values (#{userName}, #{email}, #{password}, #{createdTime}, 0, #{lockVersion}, 0) "
-        }
+            value = { addUserSql }
     )
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     public int addUser(User user);
